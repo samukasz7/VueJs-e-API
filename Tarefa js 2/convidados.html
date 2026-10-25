@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Convidados</title>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <style>
+        .destaque {
+            border: 2px solid gold;
+        }
+
+        li {
+            margin: 10px;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="app">
+
+    <h1>Lista de Convidados</h1>
+
+    <input
+        type="text"
+        placeholder="Digite o nome"
+        v-model="nome"
+        @keyup.enter="adicionarConvidado"
+    >
+
+    <button
+        @click="adicionarConvidado"
+        v-bind:disabled="nome.trim() === ''"
+    >
+        Adicionar
+    </button>
+
+    <p v-if="convidados.length === 0">
+        Nenhum convidado adicionado ainda.
+    </p>
+
+    <ul v-else>
+        <li
+            v-for="(convidado, index) in convidados"
+            v-bind:key="index"
+            v-bind:class="{ destaque: index === 0 }"
+        >
+            {{ convidado }}
+
+            <button @click="removerConvidado(index)">
+                Remover
+            </button>
+        </li>
+    </ul>
+
+</div>
+
+<script>
+    const app = Vue.createApp({
+
+        data() {
+            return {
+                nome: '',
+                convidados: []
+            }
+        },
+
+        methods: {
+
+            adicionarConvidado() {
+                if (this.nome.trim() !== '') {
+                    this.convidados.push(this.nome)
+                    this.nome = ''
+                }
+            },
+
+            removerConvidado(index) {
+                this.convidados.splice(index, 1)
+            }
+
+        }
+
+    })
+
+    app.mount('#app')
+</script>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Dragon Ball</title>
+</head>
+
+<body>
+
+    <h1>Personagens Dragon Ball</h1>
+
+    <div id="personagens"></div>
+
+    <script>
+
+        async function carregarPersonagens() {
+
+            let personagens = [];
+
+            for (let pagina = 1; pagina <= 6; pagina++) {
+
+                let resposta = await fetch(
+                    `https://dragonball-api.com/api/characters?page=${pagina}&limit=10`
+                );
+
+                let dados = await resposta.json();
+
+                personagens = personagens.concat(dados.items);
+            }
+
+            let div = document.getElementById("personagens");
+
+            personagens.forEach(personagem => {
+
+                div.innerHTML += `
+                    <div>
+                        <h2>${personagem.name}</h2>
+
+                        <img src="${personagem.image}" width="200">
+
+                        <p>Raça: ${personagem.race}</p>
+                        <p>Gênero: ${personagem.gender}</p>
+                        <p>Ki: ${personagem.ki}</p>
+                        <p>Ki máximo: ${personagem.maxKi}</p>
+                        <p>Afiliação: ${personagem.affiliation}</p>
+                        <p>${personagem.description}</p>
+
+                        <hr>
+                    </div>
+                `;
+            });
+        }
+
+        carregarPersonagens();
+
+    </script>
+
+</body>
+</html>
+```

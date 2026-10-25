@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogos</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+
+        input, select, button {
+            margin: 4px;
+            padding: 5px;
+        }
+
+        .favorito {
+            background-color: #fff2a8;
+        }
+
+        .jogo {
+            margin: 8px 0;
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Lista de jogos</h1>
+
+        <h3>Pesquisar</h3>
+        <input v-model.trim="busca" placeholder="Nome do jogo">
+
+        <select v-model="categoriaSelecionada">
+            <option value="Todas">Todas</option>
+            <option v-for="categoria in categorias" :key="categoria" :value="categoria">
+                {{ categoria }}
+            </option>
+        </select>
+
+        <button @click="limparFiltros">Limpar filtros</button>
+
+        <p>Jogos encontrados: {{ jogosFiltrados.length }}</p>
+
+        <div v-for="(jogo, indice) in jogosFiltrados"
+             :key="jogo.id"
+             class="jogo"
+             :class="{ favorito: jogo.favorito }">
+            <p>{{ indice + 1 }} - {{ jogo.nome }}</p>
+            <p>Categoria: {{ jogo.categoria }}</p>
+
+            <button @click="alternarFavorito(jogo.id)">
+                {{ jogo.favorito ? 'Desfavoritar' : 'Favoritar' }}
+            </button>
+            <button @click="removerJogo(jogo.id)">Remover</button>
+        </div>
+
+        <p v-if="jogosFiltrados.length == 0">Nenhum jogo encontrado.</p>
+
+        <hr>
+        <h3>Adicionar jogo</h3>
+
+        <p>
+            Nome:
+            <input v-model.trim="novoNome">
+        </p>
+
+        <p>
+            Categoria:
+            <select v-model="novaCategoria">
+                <option value="">Selecione</option>
+                <option v-for="categoria in categorias" :key="categoria" :value="categoria">
+                    {{ categoria }}
+                </option>
+            </select>
+        </p>
+
+        <button @click="adicionarJogo" :disabled="novoNome.length < 3 || novaCategoria == ''">
+            Adicionar
+        </button>
+
+        <div v-show="historico.length > 0">
+            <hr>
+            <h3>Histórico</h3>
+            <ul>
+                <li v-for="(registro, indice) in historico" :key="indice">
+                    {{ registro }}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    jogos: [
+                        { id: 1, nome: "Minecraft", categoria: "Aventura", favorito: true },
+                        { id: 2, nome: "EA Sports FC", categoria: "Esporte", favorito: false },
+                        { id: 3, nome: "Valorant", categoria: "Ação", favorito: false },
+                        { id: 4, nome: "Age of Empires IV", categoria: "Estratégia", favorito: false },
+                        { id: 5, nome: "Hollow Knight", categoria: "Aventura", favorito: true },
+                        { id: 6, nome: "Rocket League", categoria: "Esporte", favorito: false }
+                    ],
+                    categorias: ["Ação", "Aventura", "Esporte", "Estratégia"],
+                    busca: "",
+                    categoriaSelecionada: "Todas",
+                    novoNome: "",
+                    novaCategoria: "",
+                    proximoId: 7,
+                    historico: []
+                }
+            },
+
+            computed: {
+                jogosFiltrados() {
+                    return this.jogos.filter(jogo => {
+                        return jogo.nome.toLowerCase().includes(this.busca.toLowerCase()) &&
+                            (this.categoriaSelecionada == "Todas" ||
+                            jogo.categoria == this.categoriaSelecionada);
+                    });
+                }
+            },
+
+            watch: {
+                categoriaSelecionada(nova, antiga) {
+                    this.historico.push("Categoria alterada de " + antiga + " para " + nova + ".");
+                }
+            },
+
+            methods: {
+                adicionarJogo() {
+                    if (this.novoNome.length < 3 || this.novaCategoria == "") {
+                        return;
+                    }
+
+                    this.jogos.push({
+                        id: this.proximoId,
+                        nome: this.novoNome,
+                        categoria: this.novaCategoria,
+                        favorito: false
+                    });
+
+                    this.proximoId++;
+                    this.novoNome = "";
+                    this.novaCategoria = "";
+                },
+
+                alternarFavorito(id) {
+                    const jogo = this.jogos.find(jogo => jogo.id == id);
+                    if (jogo) {
+                        jogo.favorito = !jogo.favorito;
+                    }
+                },
+
+                removerJogo(id) {
+                    this.jogos = this.jogos.filter(jogo => jogo.id != id);
+                },
+
+                limparFiltros() {
+                    this.busca = "";
+                    this.categoriaSelecionada = "Todas";
+                }
+            }
+        });
+
+        app.mount("#app");
+    </script>
+</body>
+</html>

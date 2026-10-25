@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista</title>
+
+    <style>
+        .permitida{
+            color: green;
+        }
+
+        .bloqueada{
+            color: red;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Lista de tarefas</h1>
+<p>Adicione tarefas:</p>
+
+<form id="formulario" action="">
+    <input type="text" id="tarefa">
+</form>
+
+<br>
+
+<button onclick="Clicar()" id="botao">
+    Adicionar
+</button>
+
+<ul id="lista">
+</ul>
+
+<script>
+function Clicar(){
+
+    let input = document.getElementById('tarefa');
+    let texto = input.value;
+
+    let listas = document.getElementById('lista');
+    let item = document.createElement("li");
+
+    item.textContent = texto;
+
+    if(texto.toLowerCase().includes("erro")){
+        item.classList.add("bloqueada");
+    }else{
+        item.classList.add("permitida");
+    }
+
+    listas.appendChild(item);
+
+    input.value = "";
+}
+</script>
+
+</body>
+</html>

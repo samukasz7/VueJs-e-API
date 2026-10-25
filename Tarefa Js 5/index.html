@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Card de Produto</title>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+
+<div id="app">
+
+    <h1>Produto</h1>
+
+    <input type="text" v-model="produto" placeholder="Nome do produto">
+
+    <br><br>
+
+    <input type="number" v-model="preco" placeholder="Preço">
+
+    <br><br>
+
+    <button @click="mostrarCard = true">
+        Mostrar Produto
+    </button>
+
+    <div v-if="mostrarCard">
+
+        <h2>{{ produto }}</h2>
+
+        <p>
+            Preço: R$ {{ desconto ? (preco * 0.8).toFixed(2) : Number(preco).toFixed(2) }}
+        </p>
+
+        <p v-show="desconto">
+            Desconto Ativo
+        </p>
+
+        <button @click="desconto = !desconto">
+            Desconto 20%
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                produto: '',
+                preco: 0,
+                mostrarCard: false,
+                desconto: false
+            }
+        }
+    })
+
+    app.mount('#app')
+</script>
+
+</body>
+</html>
